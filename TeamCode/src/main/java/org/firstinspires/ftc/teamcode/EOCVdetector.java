@@ -50,8 +50,13 @@ public class EOCVdetector extends LinearOpMode {
         public int rightX;
         public int rightY;
 
+       private static double[] globalLeftPix;
+       private static double[] globalRightPix;
+       private static int globalLeftColor;
+       private static int  globalRightColor;
 
-        private final int rows = 640;
+
+    private final int rows = 640;
         private final int cols = 480;
 
 
@@ -73,11 +78,10 @@ public class EOCVdetector extends LinearOpMode {
 
 
 
-                //telemetry.addData("leftColor",  );
-               // telemetry.addData("Width", );
+                telemetry.addData("Left Color: ", globalLeftColor);
+                telemetry.addData("Right Color: ",globalRightColor );
 
-
-
+                telemetry.update();
                sleep(100);
 
 
@@ -89,18 +93,20 @@ public class EOCVdetector extends LinearOpMode {
 
 
     //detection pipeline
-    static class StageSwitchingPipeline extends OpenCvPipeline {
+     static class StageSwitchingPipeline extends OpenCvPipeline {
 
         Mat yCbCrChan2Mat = new Mat();
         Mat thresholdMat = new Mat();
+        Mat grayMat = new Mat();
         Mat all = new Mat();
+
 
 
         double[] refPixLeft;
         double[] refPixRight;
 
 
-        List<MatOfPoint> contoursList = new ArrayList<>();
+        //List<MatOfPoint> contoursList = new ArrayList<>();
 
         enum Stage {//color difference. greyscale
             detection,//includes outlines
@@ -135,26 +141,32 @@ public class EOCVdetector extends LinearOpMode {
         public Mat processFrame(Mat input) {
             //mat
             Imgproc.cvtColor(input, yCbCrChan2Mat, Imgproc.COLOR_RGB2YCrCb); //converts rgb to ycrcb                           cvtColor(InputArray src, OutputArray dst, int code, int dstCn=0 )
+            Imgproc.cvtColor(input,grayMat, Imgproc.COLOR_RGB2GRAY);
             Imgproc.threshold(yCbCrChan2Mat, thresholdMat, 102, 255, Imgproc.THRESH_BINARY_INV); //bw threshhold threshold(InputArray src, OutputArray dst, double thresh, double maxval, int type)
             //create a point
-            Point leftPoint = new Point(80,200);
-            Point rightPoint = new Point(400,200);
+            Point leftPoint = new Point(120,200);
+            Point rightPoint = new Point(360,200);
             Point textPoint = new Point(240,20);
             //create circle
-            Imgproc.circle(thresholdMat, leftPoint, 60, new Scalar(0,255,0),4 ); //void circle(Mat img, Point center, int radius, const Scalar& color, int thickness=1, int lineType=8, int shift=0)
-            Imgproc.circle(thresholdMat, rightPoint, 60, new Scalar(0,255,0),4 );
+            Imgproc.circle(grayMat, leftPoint, 60, new Scalar(0,255,0),4 ); //void circle(Mat img, Point center, int radius, const Scalar& color, int thickness=1, int lineType=8, int shift=0)
+            Imgproc.circle(grayMat, rightPoint, 60, new Scalar(0,255,0),4 );
+
+            //create a dot
+            Imgproc.circle(grayMat, leftPoint, 5, new Scalar(0,255,0),4);
+            Imgproc.circle(grayMat, rightPoint, 5, new Scalar(0,255,0),4);
             //get the colors of the points
-             double[] PixLeft = thresholdMat.get(80,200);
-             double[] PixRight = thresholdMat.get(400,200);
+            globalLeftPix = grayMat.get(120,200);
+            globalRightPix = grayMat.get(360,200);
 
-             int leftColor = (int)PixLeft[0];
-             int rightColor = (int)PixRight[0];
-
-
+            globalLeftColor = (int)globalLeftPix[0];
+            globalRightColor = (int)globalRightPix[0];
 
 
 
-            return thresholdMat;
+
+
+
+            return grayMat;
         }
 
     }
