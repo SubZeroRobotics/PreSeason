@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.Hardware;
 
-import org.firstinspires.ftc.teamcode.Util.Drivetrain;
+import org.firstinspires.ftc.teamcode.Util.Subsystems.Drivetrain;
 
 //import org.openftc.revextensions2.ExpansionHubEx;
 
