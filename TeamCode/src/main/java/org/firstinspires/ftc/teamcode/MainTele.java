@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Hardware;
 
+import org.firstinspires.ftc.teamcode.Util.Drivetrain;
+
 //import org.openftc.revextensions2.ExpansionHubEx;
 
 public class MainTele extends OpMode {
@@ -14,6 +16,10 @@ public class MainTele extends OpMode {
     private DcMotor FL;
     private DcMotor BR;
     private DcMotor BL;
+
+    HardwareMap hw;
+
+
 
     public void init() {
        /* RevExtensions2.init();
@@ -26,9 +32,11 @@ public class MainTele extends OpMode {
         grabber = new Grabber(hardwareMap);
         //grabber = new GrabberV2(hardwareMap);
         flipper = new FlipperV2(hardwareMap, telemetry);
-        tape = new Tape_Extention(hardwareMap);
+        tape = new Tape_Extention(hardwareMap)
+
 
 */
+        Drivetrain robotDT = new Drivetrain(hw);
     }
 
     @Override

@@ -156,8 +156,8 @@ public class EOCVdetector extends LinearOpMode {
 
 
             //create two regions for where the mineral might lie in those squares
-            leftMineral = yCbCrChan2Mat.submat((leftSquare[1], leftSquare[3], leftSquare[0], leftSquare[2]);
-            rightMineral = yCbCrChan2Mat.submat((rightSquare[1], rightSquare[3], rightSquare[0], rightSquare[2]);
+          //  leftMineral = yCbCrChan2Mat.submat((leftSquare[1], leftSquare[3], leftSquare[0], leftSquare[2]);
+          //  rightMineral = yCbCrChan2Mat.submat((rightSquare[1], rightSquare[3], rightSquare[0], rightSquare[2]);
 
 
             /*
