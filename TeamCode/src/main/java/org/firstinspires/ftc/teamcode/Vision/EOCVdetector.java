@@ -21,26 +21,6 @@ public class EOCVdetector extends LinearOpMode {
 
 
         private ElapsedTime runtime = new ElapsedTime();
-        /*
-        //0 means skystone, 1 means yellow stone
-        //-1 for debug, but we can keep it like this because if it works, it should change to either 0 or 255
-        private static int valMid = -1;
-        private static int valLeft = -1;
-        private static int valRight = -1;
-
-        private static float rectHeight = .6f/8f;
-        private static float rectWidth = 1.5f/8f;
-
-        private static float offsetX = 0f/8f;//changing this moves the three rects and the three circles left or right, range : (-2, 2) not inclusive
-        private static float offsetY = 0f/8f;//changing this moves the three rects and circles up or down, range: (-4, 4) not inclusive
-
-        private static float[] midPos = {4f/8f+offsetX, 4f/8f+offsetY};//0 = col, 1 = row
-        private static float[] leftPos = {2f/8f+offsetX, 4f/8f+offsetY};
-        private static float[] rightPos = {6f/8f+offsetX, 4f/8f+offsetY};
-        //moves all rectangles right or left by amount. units are in ratio to monitor
-
-
-         */
 
         public int leftX;
         public int leftY;
@@ -52,8 +32,18 @@ public class EOCVdetector extends LinearOpMode {
        private static int globalLeftColor;
        private static int  globalRightColor;
 
+    public static int left_one = 80;
+    public static int left_two = 200;
+    public static int left_three = 110;
+    public static int left_four = 210;
 
-    private final int rows = 640;
+    public static int right_one = 160;
+    public static int right_two = 200;
+    public static int right_three = 190;
+    public static int right_four = 210;
+
+
+        private final int rows = 640;
         private final int cols = 480;
 
 
@@ -93,9 +83,13 @@ public class EOCVdetector extends LinearOpMode {
      static class StageSwitchingPipeline extends OpenCvPipeline {
 
         Mat yCbCrChan2Mat = new Mat();
-        Mat thresholdMat = new Mat();
         Mat grayMat = new Mat();
-        Mat all = new Mat();
+        Mat leftMineral = new Mat();
+        Mat rightMineral = new Mat();
+
+        int[] leftSquare = {left_one, left_two, left_three, left_four};
+        int[] rightSquare = {right_one, right_two, right_three, right_four};
+
 
 
 
@@ -137,16 +131,44 @@ public class EOCVdetector extends LinearOpMode {
         //process frame method that gets continuously called
         public Mat processFrame(Mat input) {
             //mat
-            Imgproc.cvtColor(input, yCbCrChan2Mat, Imgproc.COLOR_RGB2YCrCb); //converts rgb to ycrcb                           cvtColor(InputArray src, OutputArray dst, int code, int dstCn=0 )
-            Imgproc.cvtColor(input,grayMat, Imgproc.COLOR_RGB2GRAY);
-            Imgproc.threshold(yCbCrChan2Mat, thresholdMat, 102, 255, Imgproc.THRESH_BINARY_INV); //bw threshhold threshold(InputArray src, OutputArray dst, double thresh, double maxval, int type)
-            //create a point
+            Imgproc.cvtColor(input, yCbCrChan2Mat, Imgproc.COLOR_RGB2YCrCb); //converts rgb to ycrcb
+            //populate 2 arrays of square coordinates
+            int[] leftSquare =
+                    {left_one,
+                    left_two, left_three,
+                    left_four};
+            int[] rightSquare =
+                    {right_one,
+                    right_two,
+                    right_three,
+                    right_four};
+
+            //create two rectangles
+            Imgproc.rectangle(input,
+                    new Point(leftSquare[0], leftSquare[1]),
+                    new Point(leftSquare[2], leftSquare[3]),
+                    new Scalar(0,255,0),1 );
+
+            Imgproc.rectangle(input,
+                    new Point(rightSquare[0], rightSquare[1]),
+                    new Point(rightSquare[2], rightSquare[3]),
+                    new Scalar(0,255,0),1 );
+
+
+            //create two regions for where the mineral might lie in those squares
+            leftMineral = yCbCrChan2Mat.submat((leftSquare[1], leftSquare[3], leftSquare[0], leftSquare[2]);
+            rightMineral = yCbCrChan2Mat.submat((rightSquare[1], rightSquare[3], rightSquare[0], rightSquare[2]);
+
+
+            /*
             Point leftPoint = new Point(120,200);
             Point rightPoint = new Point(360,200);
             Point textPoint = new Point(240,20);
             //create circle
             Imgproc.circle(grayMat, leftPoint, 60, new Scalar(0,255,0),4 ); //void circle(Mat img, Point center, int radius, const Scalar& color, int thickness=1, int lineType=8, int shift=0)
             Imgproc.circle(grayMat, rightPoint, 60, new Scalar(0,255,0),4 );
+
+            //create squares
 
             //create a dot
             Imgproc.circle(grayMat, leftPoint, 5, new Scalar(0,255,0),4);
@@ -160,10 +182,12 @@ public class EOCVdetector extends LinearOpMode {
 
 
 
+             */
 
 
 
-            return grayMat;
+
+            return input;
         }
 
     }
